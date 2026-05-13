@@ -1394,11 +1394,12 @@ source_lean() {
 		echo -e ">>$green针对lean版本开始配置优化$white" && Time
 		
 		#添加helloworld库
-		echo "src-git helloworld https://github.com/fw876/helloworld" >> feeds.conf.default
+		sed -i "/helloworld/d" feeds.conf.default
+		echo "src-git helloworld https://github.com/fw876/helloworld.git" >> feeds.conf.default
 
 
 		#target.mk
-		target_mk="luci-app-serverchan luci-app-diskman luci-app-wrtbwmon luci-app-frpc luci-app-frps luci-app-wol luci-app-dockerman luci-theme-argon luci-app-passwall luci-app-fileassistant luci-app-ipsec-vpnd luci-app-ttyd  luci-app-vnstat luci-app-diag-core  luci-app-ssr-plus luci-app-turboacc  lm-sensors  openssh-sftp-server iperf iperf3 ipv6helper tc-tiny  fail2ban  smartmontools e2fsprogs luci-app-speedtest-web luci-app-wrtbwmon luci-app-bandix #tr_ok"
+		target_mk="luci-app-serverchan luci-app-diskman luci-app-wrtbwmon luci-app-frpc luci-app-frps luci-app-wol luci-app-dockerman luci-theme-argon luci-app-passwall luci-app-fileassistant luci-app-ipsec-vpnd luci-app-ttyd  luci-app-vnstat luci-app-diag-core  luci-app-ssr-plus luci-app-turboacc  lm-sensors  openssh-sftp-server iperf iperf3 ipv6helper tc-tiny  fail2ban  smartmontools e2fsprogs luci-app-wrtbwmon luci-app-bandix parted losetup resize2fs blkid #tr_ok"
 		if [[ `grep -o "#tr_ok" include/target.mk | wc -l ` == "1" ]]; then
 			echo ""
 		else
@@ -1580,7 +1581,10 @@ EOF
 			done
 		fi
 
-		#luci-app-ssr-plus插件默认选上其他参数
+
+
+:<<"no_print"
+				#luci-app-ssr-plus插件默认选上其他参数
 		if [[ -e feeds/helloworld/luci-app-ssr-plus ]]; then
 			cat >/tmp/helloworld_set <<EOF
 				IPT2Socks
@@ -1621,7 +1625,7 @@ EOF
 			./scripts/feeds install -a -p node
 		fi
 
-:<<"no_print"
+
 		#下载luci-app-ssr-plus
 		if [[ -e package/other-plugins/luci-app-ssr-plus ]]; then
 			rm -rf   package/other-plugins/luci-app-ssr-plus
